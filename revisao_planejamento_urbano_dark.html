@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão — Planejamento Urbano e Sustentabilidade</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #18181b;
+    color: #e4e2db;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem; }
+  h1 { font-size: 18px; font-weight: 500; color: #f0ede6; margin-bottom: 1.5rem; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tab {
+    padding: 6px 14px;
+    border: 0.5px solid #3a3a40;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    background: transparent;
+    color: #9a9890;
+    transition: all 0.15s;
+  }
+  .tab.active { background: #1a2e45; color: #85b7eb; border-color: #2a4a6b; font-weight: 500; }
+  .tab:hover:not(.active) { background: #232328; color: #c8c4bb; }
+
+  /* Sections */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: #222228;
+    border: 0.5px solid #333338;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+  }
+  .card-title { font-size: 14px; font-weight: 500; margin-bottom: 8px; color: #f0ede6; }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px; font-weight: 500; color: #5a5855;
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
+  }
+
+  /* Badges */
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-right: 4px; margin-bottom: 4px; }
+  .badge-blue   { background: #0c447c; color: #b5d4f4; }
+  .badge-teal   { background: #085041; color: #9fe1cb; }
+  .badge-amber  { background: #633806; color: #fac775; }
+  .badge-coral  { background: #712b13; color: #f5c4b3; }
+  .badge-purple { background: #3c3489; color: #cecbf6; }
+  .badge-green  { background: #27500a; color: #c0dd97; }
+
+  /* Metric grid */
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .metric { background: #2a2a30; border-radius: 8px; padding: 0.75rem 1rem; }
+  .metric-label { font-size: 12px; color: #6a6865; margin-bottom: 4px; }
+  .metric-value { font-size: 20px; font-weight: 500; }
+
+  /* Pill row */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+  /* Dimension cards */
+  .dim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .dim-card { border-radius: 8px; padding: 10px 12px; }
+  .dim-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .dim-item { font-size: 12px; line-height: 1.6; }
+
+  /* Flashcards */
+  .flashcard-wrap { perspective: 800px; min-height: 160px; margin-bottom: 12px; }
+  .flashcard {
+    width: 100%; min-height: 160px; position: relative;
+    cursor: pointer; transform-style: preserve-3d; transition: transform 0.4s;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute; width: 100%; min-height: 160px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 12px; border: 0.5px solid #333338;
+    padding: 1.25rem; display: flex; flex-direction: column; justify-content: center;
+  }
+  .fc-front { background: #222228; }
+  .fc-back  { background: #2a2a30; transform: rotateY(180deg); }
+  .fc-label { font-size: 11px; color: #5a5855; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .fc-text  { font-size: 15px; line-height: 1.6; color: #e4e2db; }
+  .fc-nav { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .fc-counter { font-size: 13px; color: #6a6865; }
+  .nav-btn {
+    padding: 6px 16px; border: 0.5px solid #3a3a40; border-radius: 8px;
+    font-size: 13px; cursor: pointer; background: transparent; color: #e4e2db;
+  }
+  .nav-btn:hover { background: #2a2a30; }
+
+  /* Quiz */
+  .quiz-opt {
+    width: 100%; text-align: left; padding: 10px 14px;
+    border: 0.5px solid #333338; border-radius: 8px; margin-bottom: 8px;
+    cursor: pointer; font-size: 14px; background: #222228; color: #e4e2db;
+    transition: background 0.15s;
+  }
+  .quiz-opt:hover:not(:disabled) { background: #2a2a30; }
+  .quiz-opt.correct { background: #173404; border-color: #3b6d11; color: #c0dd97; }
+  .quiz-opt.wrong   { background: #501313; border-color: #a32d2d; color: #f7c1c1; }
+  .quiz-feedback { font-size: 13px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; }
+  .quiz-feedback.ok  { background: #173404; color: #c0dd97; }
+  .quiz-feedback.err { background: #501313; color: #f7c1c1; }
+  .next-btn {
+    margin-top: 12px; padding: 8px 20px;
+    border: 0.5px solid #3a3a40; border-radius: 8px;
+    font-size: 14px; cursor: pointer; background: #2a2a30; color: #e4e2db;
+  }
+  .next-btn:hover { background: #333338; }
+
+  /* Score bar */
+  .score-bar-wrap { background: #2a2a30; border-radius: 999px; height: 8px; margin-top: 8px; overflow: hidden; }
+  .score-bar { height: 8px; border-radius: 999px; background: #3b6d11; transition: width 0.3s; }
+
+  /* Discursivas */
+  .answer-check {
+    border-left: 3px solid #1d9e75; padding: 8px 12px; font-size: 13px;
+    line-height: 1.6; color: #9a9890;
+    background: #1a2a24;
+    border-radius: 0 8px 8px 0;
+  }
+  .correction {
+    border-left: 3px solid #e24b4a; padding: 8px 12px; font-size: 13px;
+    line-height: 1.6; color: #f7c1c1;
+    border-radius: 0 8px 8px 0; background: #2a1515; margin-top: 6px;
+  }
+  .q-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Revisão — Planejamento Urbano e Sustentabilidade</h1>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show('resumo',this)">Resumo</button>
+    <button class="tab" onclick="show('flashcards',this)">Flashcards</button>
+    <button class="tab" onclick="show('quiz',this)">Quiz</button>
+    <button class="tab" onclick="show('discursivas',this)">Discursivas</button>
+  </div>
+
+  <!-- RESUMO -->
+  <div id="resumo" class="section active">
+    <p class="section-label">Dados-chave para memorizar</p>
+    <div class="grid2">
+      <div class="metric"><div class="metric-label">População urbana mundial</div><div class="metric-value" style="color:#85b7eb">+50%</div></div>
+      <div class="metric"><div class="metric-label">América Latina — hoje</div><div class="metric-value" style="color:#85b7eb">80%</div></div>
+      <div class="metric"><div class="metric-label">América Latina — 2030</div><div class="metric-value" style="color:#5dcaa5">~85%</div></div>
+      <div class="metric"><div class="metric-label">Estatuto da Cidade</div><div class="metric-value" style="color:#afa9ec;font-size:16px">Lei 10.257/2001</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">7 Problemáticas urbanas</div>
+      <div class="pill-row">
+        <span class="badge badge-coral">Crescimento desordenado</span>
+        <span class="badge badge-blue">Mobilidade</span>
+        <span class="badge badge-amber">Segregação social</span>
+        <span class="badge badge-coral">Poluição ambiental</span>
+        <span class="badge badge-blue">Déficit habitacional</span>
+        <span class="badge badge-amber">Segurança pública</span>
+        <span class="badge badge-teal">Falta de saneamento</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3 Dimensões da sustentabilidade urbana</div>
+      <div class="dim-grid">
+        <div class="dim-card" style="background:#0d2a1e">
+          <div class="dim-title" style="color:#9fe1cb">Ambiental</div>
+          <div class="dim-item" style="color:#5dcaa5">Uso eficiente de recursos<br>Redução da poluição<br>Preservação ambiental</div>
+        </div>
+        <div class="dim-card" style="background:#0d1e2e">
+          <div class="dim-title" style="color:#b5d4f4">Social</div>
+          <div class="dim-item" style="color:#85b7eb">Qualidade de vida<br>Acesso a serviços<br>Inclusão social</div>
+        </div>
+        <div class="dim-card" style="background:#2a1e0a">
+          <div class="dim-title" style="color:#fac775">Econômica</div>
+          <div class="dim-item" style="color:#ef9f27">Crescimento sustentável<br>Geração de empregos<br>Eficiência urbana</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ferramentas e índices — o que avalia cada um</div>
+      <div style="font-size:13px; line-height:1.9; color:#9a9890">
+        <strong style="color:#e4e2db">ICS</strong> — mobilidade, resíduos, áreas verdes, emissões<br>
+        <strong style="color:#e4e2db">C40 Cities</strong> — rede internacional, redução de carbono e mudanças climáticas<br>
+        <strong style="color:#e4e2db">SCI</strong> — 3 pilares: People · Planet · Profit<br>
+        <strong style="color:#e4e2db">LEED for Cities</strong> — eficiência energética, gestão da água, qualidade de vida
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Plano Diretor — pontos essenciais</div>
+      <div style="font-size:13px; line-height:1.8; color:#9a9890">
+        Principal instrumento do planejamento urbano municipal<br>
+        Regulamentado pelo <strong style="color:#e4e2db">Estatuto da Cidade — Lei 10.257/2001</strong><br>
+        Define uso e ocupação do solo · crescimento ordenado · diretrizes de mobilidade, habitação e meio ambiente<br>
+        Origem: Constituição de 1988 deu autonomia aos municípios
+      </div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="flashcards" class="section">
+    <p class="section-label">Clique no card para ver a resposta</p>
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="fc" onclick="this.classList.toggle('flipped')">
+        <div class="fc-front">
+          <div class="fc-label">Conceito</div>
+          <div class="fc-text" id="fc-q"></div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-label">Resposta</div>
+          <div class="fc-text" id="fc-a"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="nav-btn" onclick="fcNav(-1)">← Anterior</button>
+      <span class="fc-counter" id="fc-cnt"></span>
+      <button class="nav-btn" onclick="fcNav(1)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
+    <p class="section-label">5 questões objetivas</p>
+    <div class="card">
+      <div class="q-row">
+        <div class="card-title" id="q-title"></div>
+        <div style="font-size:12px;color:#5a5855" id="q-cnt"></div>
+      </div>
+      <div style="font-size:14px;line-height:1.6;margin-bottom:14px;color:#9a9890" id="q-text"></div>
+      <div id="q-opts"></div>
+      <div id="q-feedback" style="display:none"></div>
+      <button class="next-btn" id="q-next" style="display:none" onclick="nextQ()">Próxima →</button>
+    </div>
+    <div style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#6a6865;margin-bottom:4px">
+        <span>Progresso</span><span id="q-score">0/5</span>
+      </div>
+      <div class="score-bar-wrap"><div class="score-bar" id="q-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- DISCURSIVAS -->
+  <div id="discursivas" class="section">
+    <p class="section-label">Avaliação das suas respostas</p>
+
+    <div class="card">
+      <div class="card-title">Questão 6 — Planejamento urbano integrado</div>
+      <div class="answer-check">Sua resposta está muito boa. Você acertou o conceito central (organização considerando todos os sistemas) e justificou corretamente a importância. Pequena correção gramatical: "à envolve" → "o envolve".</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Questão 7 — Três problemáticas urbanas</div>
+      <div class="answer-check">Resposta correta e bem exemplificada. Os três problemas citados (mobilidade, déficit habitacional, degradação ambiental) são todos válidos e as explicações são claras.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Questão 8 — Sustentabilidade urbana e dimensões</div>
+      <div class="answer-check">Conceito correto. As três dimensões foram bem descritas. Para a prova, lembre de associar "Econômica" também com eficiência urbana, não só empregos.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Questão 9 — Indicadores de sustentabilidade</div>
+      <div class="answer-check">Boa resposta. Você citou exemplos mensuráveis concretos (% com saneamento, área verde por habitante). Apenas atenção: "Programa Selo Verde" não é um índice de sustentabilidade urbana do conteúdo — prefira ICS, SCI, LEED for Cities ou C40 para não confundir o professor.</div>
+      <div class="correction">Substitua: "Programa Selo Verde" → "Índice de Cidades Sustentáveis (ICS)" ou "Sustainable Cities Index (SCI)"</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Questão 10 — Plano Diretor</div>
+      <div class="answer-check">Excelente resposta. Você citou corretamente o Estatuto da Cidade (2001) e as funções do Plano Diretor. A sigla "PDDU" (Plano Diretor de Desenvolvimento Urbano) é a forma ampliada — pode usar, mas verifique se o professor usa essa sigla no material.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const cards = [
+  {q:"O que é crescimento urbano desordenado?", a:"Expansão das cidades sem planejamento adequado, causando ocupação irregular do solo, falta de infraestrutura, degradação ambiental e formação de favelas. Associado à migração rural-urbana."},
+  {q:"Quais são as três dimensões da sustentabilidade urbana?", a:"Ambiental (uso eficiente de recursos, preservação), Social (qualidade de vida, inclusão, acesso a serviços) e Econômica (crescimento sustentável, empregos, eficiência urbana)."},
+  {q:"O que é segregação socioespacial?", a:"Fenômeno em que diferentes grupos sociais ocupam espaços urbanos distintos, gerando acesso desigual a serviços públicos e manutenção da pobreza estrutural."},
+  {q:"Qual lei regulamenta o Plano Diretor?", a:"O Estatuto da Cidade — Lei 10.257/2001."},
+  {q:"O que o Plano Diretor define?", a:"Regras de uso e ocupação do solo, diretrizes de desenvolvimento urbano, políticas de habitação, mobilidade e infraestrutura."},
+  {q:"O que são indicadores de sustentabilidade urbana?", a:"Ferramentas que medem o desempenho das cidades em relação à sustentabilidade. Ex: área verde por habitante, % da população com saneamento, emissões de carbono."},
+  {q:"O que avalia o Sustainable Cities Index (SCI)?", a:"Três pilares: People (pessoas), Planet (planeta) e Profit (economia)."},
+  {q:"Qual o percentual da população urbana na América Latina previsto para 2030?", a:"Cerca de 85% da população da América Latina viverá em cidades até 2030."},
+  {q:"Cite três soluções para a mobilidade urbana.", a:"Transporte público eficiente, mobilidade ativa (bicicletas e caminhada) e cidades compactas."},
+  {q:"O que inclui o saneamento básico?", a:"Abastecimento de água, coleta e tratamento de esgoto e gestão de resíduos sólidos."},
+];
+
+let fcIdx = 0;
+function renderFC() {
+  document.getElementById('fc-q').textContent = cards[fcIdx].q;
+  document.getElementById('fc-a').textContent = cards[fcIdx].a;
+  document.getElementById('fc-cnt').textContent = (fcIdx+1) + ' / ' + cards.length;
+  document.getElementById('fc').classList.remove('flipped');
+}
+function fcNav(d) { fcIdx = (fcIdx + d + cards.length) % cards.length; renderFC(); }
+renderFC();
+
+const questions = [
+  {q:"O crescimento urbano desordenado caracteriza-se principalmente por:", opts:["Expansão planejada das cidades","Ocupação do solo sem planejamento e falta de infraestrutura","Redução da população urbana","Crescimento econômico sustentável"], ans:1},
+  {q:"A segregação socioespacial ocorre quando:", opts:["Todas as classes sociais vivem nas mesmas áreas","Diferentes grupos sociais ocupam espaços urbanos distintos","A cidade possui muitos espaços públicos","Existe grande oferta de transporte público"], ans:1},
+  {q:"A sustentabilidade urbana busca equilibrar principalmente três dimensões:", opts:["Política, cultural e ambiental","Ambiental, social e econômica","Urbana, regional e global","Territorial, social e econômica"], ans:1},
+  {q:"O instrumento básico da política urbana municipal no Brasil é:", opts:["Código ambiental","Plano diretor","Licenciamento ambiental","Zoneamento agrícola"], ans:1},
+  {q:"Qual destas alternativas é um indicador de sustentabilidade urbana?", opts:["Número de veículos por cidade","Área verde por habitante","Número de prédios construídos","Número de empresas industriais"], ans:1},
+];
+let qIdx = 0, qScore = 0, qAnswered = false;
+
+function renderQ() {
+  const q = questions[qIdx];
+  document.getElementById('q-title').textContent = 'Questão ' + (qIdx+1);
+  document.getElementById('q-cnt').textContent = (qIdx+1) + '/5';
+  document.getElementById('q-text').textContent = q.q;
+  const opts = document.getElementById('q-opts');
+  opts.innerHTML = '';
+  q.opts.forEach((o,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = String.fromCharCode(65+i) + ') ' + o;
+    btn.onclick = () => answer(i, btn);
+    opts.appendChild(btn);
+  });
+  document.getElementById('q-feedback').style.display = 'none';
+  document.getElementById('q-next').style.display = 'none';
+  qAnswered = false;
+}
+
+function answer(i, btn) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = questions[qIdx];
+  const btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('q-feedback');
+  fb.style.display = 'block';
+  if(i === q.ans) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback ok';
+    fb.textContent = 'Correto!';
+    qScore++;
+  } else {
+    btn.classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback err';
+    fb.textContent = 'Incorreto. A resposta certa é a alternativa ' + String.fromCharCode(65+q.ans) + '.';
+  }
+  document.getElementById('q-score').textContent = qScore + '/5';
+  document.getElementById('q-bar').style.width = (qScore/5*100) + '%';
+  if(qIdx < 4) document.getElementById('q-next').style.display = 'block';
+}
+
+function nextQ() { qIdx++; renderQ(); }
+renderQ();
+
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
