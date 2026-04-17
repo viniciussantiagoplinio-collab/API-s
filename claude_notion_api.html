@@ -8,16 +8,77 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── Tema Claro (padrão Notion) ── */
   :root {
     --bg: #ffffff;
     --surface: #f7f6f3;
+    --surface-hover: #efeee9;
     --border: #e8e7e3;
     --text: #37352f;
+    --text-inverse: #ffffff;
     --muted: #9b9a97;
     --accent: #2383e2;
     --accent-light: #e8f1fb;
+    --accent-border: #c9dff7;
+    --accent-text: #1a5fa8;
+    --user-bubble-bg: #37352f;
+    --user-bubble-text: #ffffff;
+    --error-bg: #fff5f5;
+    --error-border: #ffd0d0;
+    --error-text: #c0392b;
+    --success: #4caf50;
+    --warning: #f59e0b;
+    --input-focus: #b0b0a8;
     --radius: 6px;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* ── Tema Escuro (Notion Dark) ── */
+  [data-theme="dark"] {
+    --bg: #191919;
+    --surface: #2f2f2f;
+    --surface-hover: #373737;
+    --border: #373737;
+    --text: #e6e6e4;
+    --text-inverse: #191919;
+    --muted: #8a8a88;
+    --accent: #4da3ea;
+    --accent-light: #1d3a5f;
+    --accent-border: #2b4d78;
+    --accent-text: #8fc0ef;
+    --user-bubble-bg: #4da3ea;
+    --user-bubble-text: #ffffff;
+    --error-bg: #3a1f1f;
+    --error-border: #5c2e2e;
+    --error-text: #ff8080;
+    --success: #6fcf7e;
+    --warning: #f5b041;
+    --input-focus: #5a5a58;
+  }
+
+  /* Detecta tema do sistema automaticamente */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #191919;
+      --surface: #2f2f2f;
+      --surface-hover: #373737;
+      --border: #373737;
+      --text: #e6e6e4;
+      --text-inverse: #191919;
+      --muted: #8a8a88;
+      --accent: #4da3ea;
+      --accent-light: #1d3a5f;
+      --accent-border: #2b4d78;
+      --accent-text: #8fc0ef;
+      --user-bubble-bg: #4da3ea;
+      --user-bubble-text: #ffffff;
+      --error-bg: #3a1f1f;
+      --error-border: #5c2e2e;
+      --error-text: #ff8080;
+      --success: #6fcf7e;
+      --warning: #f5b041;
+      --input-focus: #5a5a58;
+    }
   }
 
   body {
@@ -29,6 +90,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
   /* ── Header ── */
@@ -40,6 +102,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--bg);
     flex-shrink: 0;
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
   .logo {
     width: 26px; height: 26px;
@@ -47,34 +110,58 @@
     border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    transition: background 0.2s ease;
   }
-  .logo svg { fill: white; width: 14px; height: 14px; }
+  .logo svg { fill: var(--bg); width: 14px; height: 14px; transition: fill 0.2s ease; }
   header h1 { font-size: 14px; font-weight: 600; color: var(--text); }
   header span { font-size: 12px; color: var(--muted); margin-left: 4px; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; margin-left: auto; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); margin-left: auto; }
+
+  /* Toggle de tema */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s ease;
+    margin-left: 8px;
+  }
+  .theme-toggle:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
 
   /* ── API Key banner ── */
   #key-banner {
     background: var(--accent-light);
-    border-bottom: 1px solid #c9dff7;
+    border-bottom: 1px solid var(--accent-border);
     padding: 10px 20px;
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
   #key-banner.hidden { display: none; }
-  #key-banner label { font-size: 12px; color: #1a5fa8; font-weight: 500; white-space: nowrap; }
+  #key-banner label { font-size: 12px; color: var(--accent-text); font-weight: 500; white-space: nowrap; }
   #api-key-input {
     flex: 1;
     font-size: 12px;
     font-family: var(--font);
     padding: 5px 10px;
-    border: 1px solid #c9dff7;
+    border: 1px solid var(--accent-border);
     border-radius: var(--radius);
-    background: white;
+    background: var(--bg);
     color: var(--text);
     outline: none;
+    transition: all 0.2s ease;
   }
   #api-key-input:focus { border-color: var(--accent); }
   #save-key-btn {
@@ -87,8 +174,9 @@
     cursor: pointer;
     font-family: var(--font);
     white-space: nowrap;
+    transition: opacity 0.15s;
   }
-  #save-key-btn:hover { background: #1a70d6; }
+  #save-key-btn:hover { opacity: 0.85; }
   #change-key-btn {
     font-size: 12px;
     color: var(--muted);
@@ -111,6 +199,7 @@
   }
   #messages::-webkit-scrollbar { width: 4px; }
   #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  #messages::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
   .msg { display: flex; flex-direction: column; gap: 4px; }
   .msg-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -124,11 +213,12 @@
     max-width: 82%;
     white-space: pre-wrap;
     word-break: break-word;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
   .msg.user { align-items: flex-end; }
   .msg.user .bubble {
-    background: var(--text);
-    color: white;
+    background: var(--user-bubble-bg);
+    color: var(--user-bubble-text);
     border-bottom-right-radius: 2px;
   }
   .msg.assistant { align-items: flex-start; }
@@ -147,6 +237,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     border-bottom-left-radius: 2px;
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
   .dot-anim {
     width: 5px; height: 5px;
@@ -175,7 +266,7 @@
     color: var(--muted);
     cursor: pointer;
     font-family: var(--font);
-    transition: background .15s;
+    transition: all 0.15s;
   }
   .chip:hover { background: var(--surface); color: var(--text); }
 
@@ -187,6 +278,8 @@
     gap: 8px;
     align-items: flex-end;
     flex-shrink: 0;
+    background: var(--bg);
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
   #user-input {
     flex: 1;
@@ -202,9 +295,9 @@
     color: var(--text);
     line-height: 1.5;
     outline: none;
-    transition: border-color .15s;
+    transition: all 0.15s;
   }
-  #user-input:focus { border-color: #b0b0a8; }
+  #user-input:focus { border-color: var(--input-focus); }
   #user-input::placeholder { color: var(--muted); }
   #send-btn {
     height: 38px;
@@ -213,7 +306,7 @@
     font-family: var(--font);
     font-weight: 500;
     background: var(--text);
-    color: white;
+    color: var(--text-inverse);
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
@@ -225,13 +318,14 @@
 
   /* ── Error ── */
   .error-bubble {
-    background: #fff5f5;
-    border: 1px solid #ffd0d0;
-    color: #c0392b;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
     padding: 10px 14px;
     border-radius: var(--radius);
     font-size: 13px;
     max-width: 82%;
+    transition: all 0.2s ease;
   }
 </style>
 </head>
@@ -249,6 +343,7 @@
   </div>
   <h1>Claude <span>× Notion</span></h1>
   <div class="dot" id="status-dot" title="Pronto"></div>
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">🌓</button>
 </header>
 
 <!-- API Key banner -->
@@ -291,24 +386,98 @@ Para começar, cole sua chave de API Anthropic no campo acima.</div>
   const keyBanner  = document.getElementById('key-banner');
   const keyInput   = document.getElementById('api-key-input');
   const statusDot  = document.getElementById('status-dot');
+  const themeToggle = document.getElementById('theme-toggle');
   const history    = [];
+
+  /* ── Sistema de Tema Adaptativo ── */
+  function detectNotionTheme() {
+    // 1. Verifica parâmetros da URL (Notion às vezes envia ?theme=dark)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTheme = urlParams.get('theme') || urlParams.get('mode');
+    if (urlTheme === 'dark' || urlTheme === 'light') return urlTheme;
+
+    // 2. Verifica preferência salva
+    const savedTheme = localStorage.getItem('notion_claude_theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+
+    // 3. Usa preferência do sistema (funciona quando embutido no Notion)
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+
+    // 4. Tenta detectar via parent window (quando em iframe no Notion)
+    try {
+      if (window.parent && window.parent !== window) {
+        const parentBg = window.getComputedStyle(window.parent.document.body).backgroundColor;
+        if (parentBg) {
+          const rgb = parentBg.match(/\d+/g);
+          if (rgb && rgb.length >= 3) {
+            const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+            return brightness < 128 ? 'dark' : 'light';
+          }
+        }
+      }
+    } catch (e) {
+      // Cross-origin bloqueia o acesso, ignora silenciosamente
+    }
+
+    return 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    themeToggle.title = theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro';
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || detectNotionTheme();
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('notion_claude_theme', newTheme);
+    applyTheme(newTheme);
+  }
+
+  // Aplica tema inicial
+  applyTheme(detectNotionTheme());
+
+  // Escuta mudanças no tema do sistema (Notion reflete isso)
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // Só aplica se o usuário não tiver escolhido manualmente
+      if (!localStorage.getItem('notion_claude_theme')) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+
+  // Escuta mensagens do Notion (quando embutido via iframe)
+  window.addEventListener('message', (event) => {
+    if (event.data && typeof event.data === 'object') {
+      if (event.data.theme === 'dark' || event.data.theme === 'light') {
+        if (!localStorage.getItem('notion_claude_theme')) {
+          applyTheme(event.data.theme);
+        }
+      }
+    }
+  });
 
   /* ── API Key ── */
   let apiKey = localStorage.getItem('claude_api_key') || '';
 
   function updateKeyBanner() {
     if (apiKey) {
-      keyBanner.innerHTML = `<label style="font-size:12px;color:#1a5fa8;font-weight:500;">🔑 Chave configurada</label>
-        <button id="change-key-btn" onclick="clearKey()" style="font-size:12px;color:#9b9a97;background:none;border:none;cursor:pointer;margin-left:auto;font-family:var(--font);">Trocar chave</button>`;
+      keyBanner.innerHTML = `<label>🔑 Chave configurada</label>
+        <button id="change-key-btn" onclick="clearKey()">Trocar chave</button>`;
     } else {
-      keyBanner.innerHTML = `<label style="font-size:12px;color:#1a5fa8;font-weight:500;white-space:nowrap;">🔑 Chave API Anthropic</label>
-        <input id="api-key-input" type="password" placeholder="sk-ant-..." style="flex:1;font-size:12px;font-family:var(--font);padding:5px 10px;border:1px solid #c9dff7;border-radius:6px;background:white;color:#37352f;outline:none;" />
-        <button onclick="saveKey()" style="font-size:12px;padding:5px 12px;background:#2383e2;color:white;border:none;border-radius:6px;cursor:pointer;font-family:var(--font);white-space:nowrap;">Salvar</button>`;
+      keyBanner.innerHTML = `<label>🔑 Chave API Anthropic</label>
+        <input id="api-key-input" type="password" placeholder="sk-ant-..." />
+        <button id="save-key-btn" onclick="saveKey()">Salvar</button>`;
     }
   }
 
   function saveKey() {
-    const val = (document.getElementById('api-key-input') || keyInput).value.trim();
+    const input = document.getElementById('api-key-input');
+    const val = input.value.trim();
     if (!val.startsWith('sk-')) { alert('Chave inválida. Deve começar com sk-ant-...'); return; }
     apiKey = val;
     localStorage.setItem('claude_api_key', apiKey);
@@ -364,7 +533,7 @@ Para começar, cole sua chave de API Anthropic no campo acima.</div>
   function removeTyping() { const el = document.getElementById('typing'); if (el) el.remove(); }
 
   function setStatus(active) {
-    statusDot.style.background = active ? '#f59e0b' : '#4caf50';
+    statusDot.style.background = active ? 'var(--warning)' : 'var(--success)';
     statusDot.title = active ? 'Processando…' : 'Pronto';
   }
 
